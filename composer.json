@@ -1,0 +1,23 @@
+{
+    "name": "studiobonito/silverstripe-publishable",
+    "description": "Publishable is a module for Silverstripe that provides a number of extensions that make enabling and managing versioning for DataObjects much simpler.",
+    "type": "silverstripe-module",
+    "keywords": ["silverstripe", "publishable", "versioned", "gridfield", "dataobject", "framework", "cms"],
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Tom Densham",
+            "email": "tom.densham@studiobonito.co.uk"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "silverstripe/framework": "3.1.*"
+    },
+    "support": {
+        "issues": "https://github.com/studiobonito/silverstripe-publishable/issues"
+    },
+    "extra": {
+        "installer-name": "publishable"
+    }
+}
