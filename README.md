@@ -14,8 +14,9 @@ Copy the 'publishable' folder to the root of your SilverStripe installation.
 
 ## Usage Overview
 
-Add the publishing actions to ExampleObject
+Add the publishing actions to ExampleObject and make it versionable
 
+	ExampleObject::add_extension('Versioned("Stage", "Live")');
 	ExampleObject::add_extension('Publishable');
 
 Replace GridField with PublishableGridField on ExampleModelAdmin

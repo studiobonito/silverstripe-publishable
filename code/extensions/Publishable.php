@@ -1,19 +1,14 @@
 <?php
 
 /**
- * Publishable extends the Versioned DataExtension and adds methods for publishing, saving drafts, deleting, etc.
+ * Publishable provides methods for publishing, saving drafts, deleting, etc for DataObjects extended with Versioned.
  *
  * @author Tom Densham <tom.densham@studiobonito.co.uk>
  * @copyright (c) 2012, Studio Bonito Ltd.
  * @version 1.0
  */
-class Publishable extends Versioned
+class Publishable extends DataExtension
 {
-
-    public function __construct()
-    {
-        parent::__construct(array('Stage', 'Live'));
-    }
 
     /**
      * Compares current draft with live version,
