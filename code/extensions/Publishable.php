@@ -215,7 +215,7 @@ class Publishable extends Versioned
             ));
         }
 
-        $record = Versioned::get_one_by_stage('NewsEntry', 'Live', "\"NewsEntry\".\"ID\" = {$this->owner->ID}");
+        $record = Versioned::get_one_by_stage($this->owner->class, 'Live', "\"{$this->owner->class}\".\"ID\" = {$this->owner->ID}");
 
         $record->writeToStage('Stage', true);
     }
