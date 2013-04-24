@@ -81,6 +81,7 @@ class PublishableGridFieldPublishAction implements GridField_ColumnProvider, Gri
      */
     public function getColumnContent($gridField, $record, $columnName)
     {
+        $return = '';
         if ($record->isPublished() && $record->canPublish() && $record->canDeleteFromLive()) {
             $field = GridField_FormAction::create($gridField, 'UnPublish'.$record->ID, false, "unpublish",
                     array('RecordID' => $record->ID))
@@ -88,9 +89,9 @@ class PublishableGridFieldPublishAction implements GridField_ColumnProvider, Gri
                 ->setAttribute('title', _t('SiteTree.BUTTONUNPUBLISH', 'Unpublish'))
                 ->setAttribute('data-icon', 'unpublish')
                 ->setDescription(_t('SiteTree.BUTTONUNPUBLISHDESC', 'Remove this page from the published site'));
-            return $field->Field();
+            $return .= $field->Field();
         }
-        if ($record->canPublish() && !$record->IsDeletedFromStage) {
+        if ($record->canPublish() && (!$record->IsDeletedFromStage || $record->IsModifiedOnStage)) {
             $field = GridField_FormAction::create($gridField, 'Publish'.$record->ID, false, "publish",
                     array('RecordID' => $record->ID))
                 ->addExtraClass('gridfield-button-publish')
@@ -98,10 +99,10 @@ class PublishableGridFieldPublishAction implements GridField_ColumnProvider, Gri
                 ->setAttribute('data-icon', 'accept')
                 ->setDescription(_t('PublishableGridFieldAction.BUTTONUNPUBLISHDESC',
                     'Save this page to the published site'));
-            return $field->Field();
+            $return .= $field->Field();
         }
 
-        return;
+        return $return;
     }
 
     /**
