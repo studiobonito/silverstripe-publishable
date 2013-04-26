@@ -17,9 +17,19 @@ class PublishableGridFieldStatusColumns implements GridField_ColumnProvider
 
     public function getColumnAttributes($gridField, $record, $columnName)
     {
-        $class = "col-$columnName ".($record->ExistsOnLive ? ' live' : ($record->IsAddedToStage ? ' stage' : ''));
-
-        return array('class' => $class);
+	    $return = array('class' => "col-$columnName");
+	    if ($record->ExistsOnLive) {
+		    $return['class'] .= " live";
+		    $return['title'] = _t('PublishableGridFieldStatusColumns.Live', 'Published');
+		    if ($record->IsModifiedOnStage) {
+			    $return['class'] .= " modified-stage";
+			    $return['title'] = _t('PublishableGridFieldStatusColumns.ModifiedStage', 'Published, but modified');
+		    }
+	    } elseif ($record->IsAddedToStage) {
+		    $return['class'] .= " stage";
+		    $return['title'] = _t('PublishableGridFieldStatusColumns.Stage', 'Draft');
+	    }
+	    return $return;
     }
 
     public function getColumnContent($gridField, $record, $columnName)
