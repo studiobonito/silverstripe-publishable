@@ -192,7 +192,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
 
         $this->message = $this->buildMessage('PublishableGridFieldDetailForm.SAVE_SUCCESS', 'Saved {name} {link}');
 
-        if ($data['publish'] == true) {
+	    if (isset($data['publish']) && $data['publish'] == true) {
             try {
                 $this->record->doPublish();
             }
