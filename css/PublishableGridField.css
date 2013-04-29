@@ -1,3 +1,4 @@
 .col-PublishableStage{background-color:#F2DADB;border-bottom:1px solid #ccc;color:#636363}
 .col-PublishableStage.live{background-color:#DAE79A;color:#56660C}
 .col-PublishableStage.stage{background-color:#FFF0BC;color:#7E7470}
+.col-PublishableStage.live.modified-stage{background-color:#FFC973;color:#7E7470}
