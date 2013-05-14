@@ -58,7 +58,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
 
         if (!$this->record->isNew() && !$this->record->isLatestVersion()) {
             $currentRecord = $this->record;
-            $this->record = Versioned::get_latest_version('NewsEntry', $currentRecord->ID);
+            $this->record = Versioned::get_latest_version($currentRecord->ClassName, $currentRecord->ID);
             $link = "<a href=\"{$this->Link()}\">{$this->record->Title}</a>";
             $this->record = $currentRecord;
             $form->sessionMessage(_t('PublishableGridFieldDetailForm.NOT_LATEST_VERSION',
