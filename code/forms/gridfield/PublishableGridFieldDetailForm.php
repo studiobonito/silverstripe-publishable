@@ -232,6 +232,8 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
     {
         $this->record->doRevert();
 
+        $this->record = DataObject::get_by_id($this->record->class, $this->record->ID);
+
         $this->message = $this->buildMessage('PublishableGridFieldDetailForm.RESTORE_SUCCESS', 'Restored {name} "{title}"');
 
         return $this->onAfterAction($data, $form);
