@@ -173,7 +173,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
             return $this->getResponseNegotiator($form, $controller)->respond($controller->getRequest());
         }
 
-        $this->message = $this->buildMessage('PublishableGridFieldDetailForm.SAVE_SUCCESS', 'Saved {name} {link}');
+        $this->message = $this->buildMessage('PublishableGridFieldDetailForm.SAVE_SUCCESS', 'Saved {name} "{title}"');
 
 	    if (isset($data['publish']) && $data['publish'] == true) {
             try {
@@ -185,7 +185,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
             }
 
             $this->message = $this->buildMessage('PublishableGridFieldDetailForm.PUBLISH_SUCCESS',
-                'Published {name} {link}');
+                'Published {name} "{title}"');
         }
 
         return $this->onAfterAction($data, $form, $controller);
@@ -208,7 +208,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
         }
 
         $this->message = $this->buildMessage('PublishableGridFieldDetailForm.UNPUBLISH_SUCCESS',
-            'Unpublished {name} {link}');
+            'Unpublished {name} "{title}"');
 
         return $this->onAfterAction($data, $form);
     }
@@ -223,7 +223,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
             return $this->edit(Controller::curr()->getRequest());
         }
 
-        $this->message = $this->buildMessage('PublishableGridFieldDetailForm.DELETE_SUCCESSS', 'Deleted {name} {link}');
+        $this->message = $this->buildMessage('PublishableGridFieldDetailForm.DELETE_SUCCESSS', 'Deleted {name} "{title}"');
 
         return $this->onAfterAction($data, $form);
     }
@@ -232,7 +232,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
     {
         $this->record->doRevert();
 
-        $this->message = $this->buildMessage('PublishableGridFieldDetailForm.RESTORE_SUCCESS', 'Restored {name} {link}');
+        $this->message = $this->buildMessage('PublishableGridFieldDetailForm.RESTORE_SUCCESS', 'Restored {name} "{title}"');
 
         return $this->onAfterAction($data, $form);
     }
@@ -264,12 +264,12 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
         }
     }
 
-    protected function buildMessage($entity, $string, $name = null, $link = null)
+    protected function buildMessage($entity, $string, $name = null, $title = null)
     {
         $name = $name ? : $this->record->i18n_singular_name();
-        $link = $link ? : '<a href="'.$this->Link('edit').'">"'.htmlspecialchars($this->record->Title, ENT_QUOTES).'"</a>';
+        $title = $title ? : htmlspecialchars($this->record->Title, ENT_QUOTES);
 
-        return _t($entity, $string, array('name' => $name, 'link' => $link));
+        return _t($entity, $string, array('name' => $name, 'title' => $title));
     }
 
     protected function getResponseNegotiator(&$form, &$controller)
