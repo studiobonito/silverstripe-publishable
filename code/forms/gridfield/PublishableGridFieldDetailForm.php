@@ -62,109 +62,86 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
     {
         $form = parent::ItemEditForm();
 
-        if (!$this->record->isNew() && !$this->record->isLatestVersion()) {
-            $currentRecord = $this->record;
-            $this->record = Versioned::get_latest_version($currentRecord->ClassName, $currentRecord->ID);
-            $link = "<a href=\"{$this->Link()}\">{$this->record->Title}</a>";
-            $this->record = $currentRecord;
-            $form->sessionMessage(_t('PublishableGridFieldDetailForm.NOT_LATEST_VERSION',
-                    '<strong>Warning!</strong> There is a newer version of this {name} ({link})',
-                    array('name' => $this->record->i18n_singular_name(), 'link' => $link)), 'warning');
+        $actions = $form->Actions();
+
+        $majorActions = CompositeField::create()
+            ->setName('MajorActions')
+            ->setTag('fieldset')
+            ->addExtraClass('ss-ui-buttonset');
+
+        $rootTabSet = new TabSet('ActionMenus');
+        $moreOptions = new Tab(
+            'MoreOptions',
+            _t('SiteTree.MoreOptions', 'More options', 'Expands a view for more buttons')
+        );
+        $rootTabSet->push($moreOptions);
+        $rootTabSet->addExtraClass('ss-ui-action-tabset action-menus');
+
+        // Render page information into the "more-options" drop-up, on the top.
+        $live = Versioned::get_one_by_stage($this->record->class, 'Live', "\"{$this->record->class}\".\"ID\"='{$this->record->ID}'");
+        $existsOnLive = $this->record->getExistsOnLive();
+        $moreOptions->push(
+            new LiteralField('Information',
+                $this->record->customise(array(
+                    'Live' => $live,
+                    'ExistsOnLive' => $existsOnLive
+                ))->renderWith('SiteTree_Information')
+            )
+        );
+
+        $actions->removeByName('action_doSave');
+
+        $majorActions->push(
+            FormAction::create('save', _t('SiteTree.BUTTONSAVED', 'Saved'))
+                ->setAttribute('data-icon', 'accept')
+                ->setAttribute('data-icon-alternate', 'addpage')
+                ->setAttribute('data-text-alternate', _t('CMSMain.SAVEDRAFT', 'Save draft'))
+                ->setUseButtonTag(true)
+        );
+
+        $published = $this->record->isPublished();
+
+        $publish = FormAction::create(
+            'publish',
+            $published ? _t('SiteTree.BUTTONPUBLISHED', 'Published') : _t('SiteTree.BUTTONSAVEPUBLISH', 'Save & publish')
+        )
+            ->setAttribute('data-icon', 'accept')
+            ->setAttribute('data-icon-alternate', 'disk')
+            ->setAttribute('data-text-alternate', _t('SiteTree.BUTTONSAVEPUBLISH', 'Save & publish'))
+            ->setUseButtonTag(true);
+
+        if (!$published || ($this->record->stagesDiffer('Stage', 'Live') && $published)) {
+            $publish->addExtraClass('ss-ui-alternate');
         }
 
-        $minorActions = CompositeField::create()->setTag('fieldset')->addExtraClass('ss-ui-buttonset');
-        $actions = new FieldList($minorActions);
+        $majorActions->push($publish);
 
-        if ($this->record->hasMethod('isPublished')
-            && $this->record->isPublished()
-            && $this->record->canPublish()
-            && !$this->record->IsDeletedFromStage
-            && $this->record->canDeleteFromLive()) {
-            // "unpublish"
-            $minorActions->push(
-                FormAction::create('doUnpublish', _t('PublishableGridFieldDetailForm.UNPUBLISH', 'Unpublish'), 'delete')
-                    ->setDescription(_t('PublishableGridFieldDetailForm.UNPUBLISH_DESC',
-                            'Remove this page from the published site'))
-                    ->addExtraClass('ss-ui-action-destructive')->setAttribute('data-icon', 'unpublish')
-                    ->setUseButtonTag(true)
-            );
+        if ($published) {
+            $unpublish = FormAction::create('unpublish', _t('SiteTree.BUTTONUNPUBLISH', 'Unpublish'), 'delete')
+                ->addExtraClass('ss-ui-action-destructive')
+                ->setUseButtonTag(true);
+
+            $moreOptions->push($unpublish);
         }
 
-        if ($this->record->hasMethod('canEdit') && $this->record->canEdit()) {
-            if ($this->record->IsDeletedFromStage) {
-                if ($this->record->ExistsOnLive) {
-                    // "restore"
-                    $minorActions->push(
-                        FormAction::create('doRevert', _t('PublishableGridFieldDetailForm.RESTORE', 'Restore'))
-                            ->setUseButtonTag(true)
-                    );
-
-                    if ($this->record->canDelete() && $this->record->canDeleteFromLive()) {
-                        // "delete from live"
-                        $minorActions->push(
-                            FormAction::create('doDeleteFromLive', _t('PublishableGridFieldDetailForm.DELETE', 'Delete'))
-                                ->addExtraClass('ss-ui-action-destructive')
-                                ->setUseButtonTag(true)
-                        );
-                    }
-                } elseif ($this->record->ID === 0) {
-                    // "save"
-                    $minorActions->push(
-                        FormAction::create('doSave', _t('PublishableGridFieldDetailForm.SAVEDRAFT', 'Save Draft'))
-                            ->setAttribute('data-icon', 'addpage')
-                            ->setUseButtonTag(true)
-                    );
-                    if ($this->record->hasMethod('canPublish') && $this->record->canPublish()) {
-                        // "publish"
-                        $actions->push(
-                            FormAction::create('doPublish',
-                                    _t('PublishableGridFieldDetailForm.PUBLISH', 'Save & Publish'))
-                                ->addExtraClass('ss-ui-action-constructive')
-                                ->setAttribute('data-icon', 'accept')
-                                ->setUseButtonTag(true)
-                        );
-                    }
-                } else {
-                    // "restore"
-                    $minorActions->push(
-                        FormAction::create('doRestore', _t('PublishableGridFieldDetailForm.RESTORE', 'Restore'))
-                            ->setAttribute('data-icon', 'decline')
-                            ->setUseButtonTag(true)
-                    );
-                }
-            } else {
-                if ($this->record->canDelete()) {
-                    // "delete"
-                    $minorActions->push(
-                        FormAction::create('doDelete', _t('PublishableGridFieldDetailForm.DELETEDRAFT', 'Delete draft'))
-                            ->addExtraClass('delete ss-ui-action-destructive')
-                            ->setAttribute('data-icon', 'decline')
-                            ->setUseButtonTag(true)
-                    );
-                }
-
-                // "save"
-                $minorActions->push(
-                    FormAction::create('doSave', _t('PublishableGridFieldDetailForm.SAVEDRAFT', 'Save Draft'))
-                        ->setAttribute('data-icon', 'addpage')
-                        ->setUseButtonTag(true)
-                );
-            }
+        if ($this->record->stagesDiffer('Stage', 'Live') && $published) {
+            $moreOptions->push(
+                FormAction::create('rollback', _t('SiteTree.BUTTONCANCELDRAFT', 'Cancel draft changes'))
+                    ->setDescription(_t('SiteTree.BUTTONCANCELDRAFTDESC', 'Delete your draft and revert to the currently published page'))
+                    ->setUseButtonTag(true));
         }
 
-        if ($this->record->hasMethod('canPublish')
-            && $this->record->canPublish()
-            && !$this->record->IsDeletedFromStage) {
-            // "publish"
-            $actions->push(
-                FormAction::create('doPublish', _t('PublishableGridFieldDetailForm.PUBLISH', 'Save & Publish'))
-                    ->addExtraClass('ss-ui-action-constructive')
-                    ->setAttribute('data-icon', 'accept')
-                    ->setUseButtonTag(true)
-            );
-        }
+        $actions->removeByName('action_doDelete');
 
-        $form->setActions($actions);
+        $moreOptions->push(
+            FormAction::create('delete', _t('SiteTree.BUTTONDELETE', 'Delete draft'))
+                ->addExtraClass('ss-ui-action-destructive')
+                ->setUseButtonTag(true)
+        );
+
+        $actions->push($majorActions);
+        $actions->push($rootTabSet);
+
         return $form;
     }
 
@@ -178,7 +155,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
         }
     }
 
-    public function doSave($data, $form)
+    public function save($data, $form)
     {
         $controller = Controller::curr();
 
@@ -214,13 +191,13 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
         return $this->onAfterAction($data, $form, $controller);
     }
 
-    public function doPublish($data, $form)
+    public function publish($data, $form)
     {
         $data['publish'] = true;
-        return $this->doSave($data, $form);
+        return $this->save($data, $form);
     }
 
-    public function doUnpublish($data, $form)
+    public function unpublish($data, $form)
     {
         try {
             $this->record->doUnpublish();
@@ -236,7 +213,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
         return $this->onAfterAction($data, $form);
     }
 
-    public function doDelete($data, $form)
+    public function delete($data, $form)
     {
         try {
             $this->record->doDeleteDraft();
@@ -251,21 +228,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
         return $this->onAfterAction($data, $form);
     }
 
-    public function doDeleteFromLive($data, $form)
-    {
-        return $this->doUnpublish($data, $form);
-    }
-
-    public function doRestore($data, $form)
-    {
-        $this->record->doRestore();
-
-        $this->message = $this->buildMessage('PublishableGridFieldDetailForm.RESTORE_SUCCESS', 'Restored {name} {link}');
-
-        return $this->onAfterAction($data, $form);
-    }
-
-    public function doRevert($data, $form)
+    public function rollback($data, $form)
     {
         $this->record->doRevert();
 
