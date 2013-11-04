@@ -241,29 +241,9 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
 
     protected function onAfterAction(&$data, &$form, &$controller = null)
     {
-        $controller = $controller ? : Controller::curr();
+        $form->sessionMessage($this->message, 'good');
 
-        if ($this->gridField->getList()->byId($this->record->ID)) {
-            $form->sessionMessage($this->message, 'good');
-
-            // Redirect to the current version
-            $controller->getRequest()->addHeader('X-Pjax', 'Content');
-            return $controller->redirect($this->Link(), 302);
-        } else {
-            $toplevelController = $this->getToplevelController();
-            if ($toplevelController && $toplevelController instanceof LeftAndMain) {
-                $backForm = $toplevelController->getEditForm();
-                $backForm->sessionMessage($this->message, 'good');
-            } else {
-                $form->sessionMessage($this->message, 'good');
-            }
-
-            // Changes to the record properties might've excluded the record from
-            // a filtered list, so return back to the main view if it can't be found
-            $noActionURL = $controller->removeAction($data['url']);
-            $controller->getRequest()->addHeader('X-Pjax', 'Content');
-            return $controller->redirect($noActionURL, 302);
-        }
+        return $this->edit(Controller::curr()->getRequest());
     }
 
     protected function buildMessage($entity, $string, $name = null, $title = null)
