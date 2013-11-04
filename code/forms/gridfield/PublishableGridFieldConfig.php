@@ -30,11 +30,9 @@ class PublishableGridFieldConfig_Base extends PublishableGridFieldConfig
     {
         $this->addComponent(new PublishableGridFieldStage($currentStage));
         $this->addComponent(new GridFieldButtonRow('before'));
-        $this->addComponent(new PublishableGridFieldStageFilter('buttons-before-right'));
         $this->addComponent(new GridFieldToolbarHeader());
         $this->addComponent($sort = new GridFieldSortableHeader());
         $this->addComponent($filter = new GridFieldFilterHeader());
-        $this->addComponent(new PublishableGridFieldStatusColumns());
         $this->addComponent(new GridFieldDataColumns());
         $this->addComponent(new GridFieldPageCount('toolbar-header-right'));
         $this->addComponent($pagination = new GridFieldPaginator($itemsPerPage));
@@ -64,11 +62,9 @@ class PublishableGridFieldConfig_RecordViewer extends PublishableGridFieldConfig
         $this->addComponent(new PublishableGridFieldStage($currentStage));
         $this->addComponent(new GridFieldButtonRow('before'));
         $this->addComponent(new GridFieldAddNewButton('buttons-before-left'));
-        $this->addComponent(new PublishableGridFieldStageFilter('buttons-before-right'));
         $this->addComponent(new GridFieldToolbarHeader());
         $this->addComponent($sort = new GridFieldSortableHeader());
         $this->addComponent($filter = new GridFieldFilterHeader());
-        $this->addComponent(new PublishableGridFieldStatusColumns());
         $this->addComponent(new GridFieldDataColumns());
         $this->addComponent(new PublishableGridFieldViewButton());
         $this->addComponent(new GridFieldPageCount('toolbar-header-right'));
@@ -100,11 +96,9 @@ class PublishableGridFieldConfig_RecordEditor extends PublishableGridFieldConfig
         $this->addComponent(new PublishableGridFieldStage($currentStage));
         $this->addComponent(new GridFieldButtonRow('before'));
         $this->addComponent(new GridFieldAddNewButton('buttons-before-left'));
-        $this->addComponent(new PublishableGridFieldStageFilter('buttons-before-right'));
         $this->addComponent(new GridFieldToolbarHeader());
         $this->addComponent($sort = new GridFieldSortableHeader());
         $this->addComponent($filter = new GridFieldFilterHeader());
-        $this->addComponent(new PublishableGridFieldStatusColumns());
         $this->addComponent(new GridFieldDataColumns());
         $this->addComponent(new PublishableGridFieldDeleteAction());
         $this->addComponent(new PublishableGridFieldPublishAction());
