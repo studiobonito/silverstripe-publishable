@@ -50,6 +50,12 @@ class PublishableGridFieldDetailForm extends GridFieldDetailForm
  */
 class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemRequest
 {
+    private static $allowed_actions = array(
+        'edit',
+        'view',
+        'ItemEditForm'
+    );
+
     protected $message;
 
     function ItemEditForm()
