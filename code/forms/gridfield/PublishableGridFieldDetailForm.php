@@ -142,6 +142,10 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
         $actions->push($majorActions);
         $actions->push($rootTabSet);
 
+        if($this->record->hasMethod('getCMSValidator')) {
+            $form->setValidator($this->record->getCMSValidator());
+        }
+
         return $form;
     }
 
