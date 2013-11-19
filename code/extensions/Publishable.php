@@ -103,7 +103,7 @@ class Publishable extends DataExtension
 
     public function canDeleteFromLive($member = null)
     {
-        return $this->canPublish($member);
+        return $this->owner->canPublish($member);
     }
 
     /**
