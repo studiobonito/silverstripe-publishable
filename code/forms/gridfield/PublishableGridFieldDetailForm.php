@@ -91,13 +91,15 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
 
         $actions->removeByName('action_doSave');
 
-        $majorActions->push(
-            FormAction::create('save', _t('SiteTree.BUTTONSAVED', 'Saved'))
-                ->setAttribute('data-icon', 'accept')
-                ->setAttribute('data-icon-alternate', 'addpage')
-                ->setAttribute('data-text-alternate', _t('CMSMain.SAVEDRAFT', 'Save draft'))
-                ->setUseButtonTag(true)
-        );
+        if ($this->record->canEdit()) {
+            $majorActions->push(
+                FormAction::create('save', _t('SiteTree.BUTTONSAVED', 'Saved'))
+                    ->setAttribute('data-icon', 'accept')
+                    ->setAttribute('data-icon-alternate', 'addpage')
+                    ->setAttribute('data-text-alternate', _t('CMSMain.SAVEDRAFT', 'Save draft'))
+                    ->setUseButtonTag(true)
+            );
+        }
 
         $published = $this->record->isPublished();
 
@@ -114,14 +116,14 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
             $publish->addExtraClass('ss-ui-alternate');
         }
 
-        $majorActions->push($publish);
+        if ($this->record->canPublish()) $majorActions->push($publish);
 
         if ($published) {
             $unpublish = FormAction::create('unpublish', _t('SiteTree.BUTTONUNPUBLISH', 'Unpublish'), 'delete')
                 ->addExtraClass('ss-ui-action-destructive')
                 ->setUseButtonTag(true);
 
-            $moreOptions->push($unpublish);
+            if ($this->record->canDeleteFromLive()) $moreOptions->push($unpublish);
         }
 
         if ($this->record->stagesDiffer('Stage', 'Live') && $published) {
@@ -133,11 +135,13 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
 
         $actions->removeByName('action_doDelete');
 
-        $moreOptions->push(
-            FormAction::create('delete', _t('SiteTree.BUTTONDELETE', 'Delete draft'))
-                ->addExtraClass('ss-ui-action-destructive')
-                ->setUseButtonTag(true)
-        );
+        if ($this->record->canDelete()) {
+            $moreOptions->push(
+                FormAction::create('delete', _t('SiteTree.BUTTONDELETE', 'Delete draft'))
+                    ->addExtraClass('ss-ui-action-destructive')
+                    ->setUseButtonTag(true)
+            );
+        }
 
         $actions->push($majorActions);
         $actions->push($rootTabSet);
