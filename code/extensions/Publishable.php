@@ -121,6 +121,9 @@ class Publishable extends DataExtension
         }
 
         $this->owner->publish('Stage', 'Live');
+
+        // Handle activities undertaken by extensions
+        $this->owner->invokeWithExtensions('onAfterPublish', $this->owner);
     }
 
     /**
@@ -138,6 +141,9 @@ class Publishable extends DataExtension
         }
 
         $this->owner->deleteFromStage('Live');
+
+        // Handle activities undertaken by extensions
+        $this->owner->invokeWithExtensions('onAfterUnPublish', $this->owner);
     }
 
     /**
