@@ -103,7 +103,7 @@ class Publishable extends DataExtension
 
     public function canDeleteFromLive($member = null)
     {
-        return $this->canPublish($member);
+        return $this->owner->canPublish($member);
     }
 
     /**
@@ -121,6 +121,9 @@ class Publishable extends DataExtension
         }
 
         $this->owner->publish('Stage', 'Live');
+
+        // Handle activities undertaken by extensions
+        $this->owner->invokeWithExtensions('onAfterPublish', $this->owner);
     }
 
     /**
@@ -138,6 +141,9 @@ class Publishable extends DataExtension
         }
 
         $this->owner->deleteFromStage('Live');
+
+        // Handle activities undertaken by extensions
+        $this->owner->invokeWithExtensions('onAfterUnPublish', $this->owner);
     }
 
     /**
@@ -210,8 +216,10 @@ class Publishable extends DataExtension
             ));
         }
 
-        $record = Versioned::get_one_by_stage($this->owner->class, 'Live', "\"{$this->owner->class}\".\"ID\" = {$this->owner->ID}");
+        $this->owner->publish('Live', 'Stage', false);
 
-        $record->writeToStage('Stage', true);
+        // Use a clone to get the updates made by $this->publish
+        $clone = DataObject::get_by_id($this->owner->class, $this->owner->ID);
+        $clone->writeWithoutVersion();
     }
 }
