@@ -81,13 +81,13 @@ class PublishableGridFieldDeleteAction implements GridField_ColumnProvider, Grid
      */
     public function getColumnContent($gridField, $record, $columnName)
     {
-        if (!$record->IsDeletedFromStage && $record->canDelete()) {
+        if (!$record->IsDeletedFromStage && $record->canDelete() && !$record->isPublished()) {
             $field = GridField_FormAction::create($gridField, 'DeleteFromStage'.$record->ID, false, "deletefromstage",
                     array('RecordID' => $record->ID))
                 ->addExtraClass('gridfield-button-deletedraft')
                 ->setAttribute('title', _t('PublishableGridFieldAction.DELETE', 'Delete draft'))
                 ->setAttribute('data-icon', 'decline')
-                ->setDescription(_t('PublishableGridFieldAction.DELETE_DESC', 'Remove this page from the draft site'));
+                ->setDescription(_t('PublishableGridFieldAction.DELETE_DESC', 'Remove this item from the draft site'));
             return $field->Field();
         }
 
