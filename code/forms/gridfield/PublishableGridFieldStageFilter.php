@@ -45,10 +45,11 @@ class PublishableGridFieldStageFilter implements GridField_HTMLProvider
         $forTemplate = new ArrayData(array());
         $forTemplate->Fields = new ArrayList();
 
-        $stageTitle = _t('PublishableGridFieldAction.STAGE', 'Version');
+        $stageTitle = _t('PublishableGridFieldAction.STAGE', 'Stage');
 
         $stages = array(
-            'Latest' => _t('PublishableGridFieldAction.LATEST_VERSION', 'Latest'),
+            'Latest' => _t('PublishableGridFieldAction.LATEST_VERSION', 'All'),
+            'All'    => _t('PublishableGridFieldAction.LATEST_VERSION', 'All (Including Deleted)'),
             'Live'   => _t('PublishableGridFieldAction.STAGE_LIVE', 'Published'),
             'Stage'  => _t('PublishableGridFieldAction.STAGE_STAGE', 'Draft')
         );

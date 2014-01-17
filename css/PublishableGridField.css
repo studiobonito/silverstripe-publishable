@@ -4,3 +4,6 @@
 .publishablegrid span.badge.status-deletedonlive { color: #636363; border: 1px solid #E49393; background-color: #F2DADB; }
 .publishablegrid span.badge.status-removedfromdraft { color: #636363; border: 1px solid #E49393; background-color: #F2DADB; }
 .publishablegrid span.badge.status-workflow-approval { color: #56660C; border: 1px solid #7C8816; background-color: #DAE79A; }
+
+.publishablegrid .publishablegridfield-stage { margin-top: 0; }
+.publishablegrid .publishablegridfield-stage label { line-height: 31px; vertical-align: bottom; }

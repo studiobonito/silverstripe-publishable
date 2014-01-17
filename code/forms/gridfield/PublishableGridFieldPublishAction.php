@@ -83,23 +83,22 @@ class PublishableGridFieldPublishAction implements GridField_ColumnProvider, Gri
     {
         $return = '';
         if ($record->canPublish()) {
-            if ($record->isPublished() && $record->canDeleteFromLive()) {
+            if (!$record->IsDeletedFromStage && (!$record->isPublished() || $record->IsModifiedOnStage)) {
+                $field = GridField_FormAction::create($gridField, 'Publish'.$record->ID, false, "publish",
+                                                      array('RecordID' => $record->ID))
+                    ->addExtraClass('gridfield-button-publish')
+                    ->setAttribute('title', _t('SiteTree.BUTTONSAVEPUBLISH', 'Save & Publish'))
+                    ->setAttribute('data-icon', 'accept')
+                    ->setDescription(_t('PublishableGridFieldAction.BUTTONUNPUBLISHDESC',
+                                        'Save this item to the published site'));
+                $return .= $field->Field();
+            } elseif ($record->isPublished() && $record->canDeleteFromLive()) {
                 $field = GridField_FormAction::create($gridField, 'UnPublish'.$record->ID, false, "unpublish",
                         array('RecordID' => $record->ID))
                     ->addExtraClass('gridfield-button-unpublish')
                     ->setAttribute('title', _t('SiteTree.BUTTONUNPUBLISH', 'Unpublish'))
                     ->setAttribute('data-icon', 'unpublish')
-                    ->setDescription(_t('SiteTree.BUTTONUNPUBLISHDESC', 'Remove this page from the published site'));
-                $return .= $field->Field();
-            }
-            if (!$record->IsDeletedFromStage && (!$record->isPublished() || $record->IsModifiedOnStage)) {
-                $field = GridField_FormAction::create($gridField, 'Publish'.$record->ID, false, "publish",
-                        array('RecordID' => $record->ID))
-                    ->addExtraClass('gridfield-button-publish')
-                    ->setAttribute('title', _t('SiteTree.BUTTONSAVEPUBLISH', 'Save & Publish'))
-                    ->setAttribute('data-icon', 'accept')
-                    ->setDescription(_t('PublishableGridFieldAction.BUTTONUNPUBLISHDESC',
-                        'Save this page to the published site'));
+                    ->setDescription(_t('SiteTree.BUTTONUNPUBLISHDESC', 'Remove this item from the published site'));
                 $return .= $field->Field();
             }
         }

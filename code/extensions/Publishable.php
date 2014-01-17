@@ -182,7 +182,15 @@ class Publishable extends DataExtension
             ));
         }
 
-        $this->owner->deleteFromStage('Stage');
+        $record = DataObject::get_one(
+            $this->owner->CLassName,
+            sprintf("\"{$this->owner->ClassName}\".\"ID\" = %d", $this->owner->ID)
+        );
+        if($record && !$record->canDelete()) return Security::permissionFailure();
+        if(!$record || !$record->ID) throw new SS_HTTPResponse_Exception("Bad record ID #$this->owner->ID", 404);
+
+        // save ID and delete record
+        $record->delete();
     }
 
     /**
