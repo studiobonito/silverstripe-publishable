@@ -78,7 +78,8 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
         $rootTabSet->addExtraClass('ss-ui-action-tabset action-menus');
 
         // Render page information into the "more-options" drop-up, on the top.
-        $live = Versioned::get_one_by_stage($this->record->class, 'Live', "\"{$this->record->class}\".\"ID\"='{$this->record->ID}'");
+        $baseClass = ClassInfo::baseDataClass($this->record->class);
+        $live = Versioned::get_one_by_stage($this->record->class, 'Live', "\"{$baseClass}\".\"ID\"='{$this->record->ID}'");
         $existsOnLive = $this->record->getExistsOnLive();
         $published = $this->record->isPublished();
         $moreOptions->push(
