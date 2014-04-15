@@ -91,7 +91,9 @@ class Publishable extends DataExtension
     {
         if ($this->isNew()) return false;
 
-        $result = DB::query("SELECT \"ID\" FROM \"{$this->owner->class}_Live\" WHERE \"ID\" = {$this->owner->ID}");
+        $baseClass = ClassInfo::baseDataClass($this->owner->class);
+
+        $result = DB::query("SELECT \"ID\" FROM \"{$baseClass}_Live\" WHERE \"ID\" = {$this->owner->ID}");
 
         return ($result->value()) ? true : false;
     }
