@@ -35,20 +35,24 @@ class PublishableGridFieldStage implements GridField_DataManipulator
      */
     public function getManipulatedData(GridField $gridField, SS_List $dataList)
     {
-        $dataQuery = $dataList->dataQuery();
+        if (is_a($dataList, 'DataList')) {
+            $dataQuery = $dataList->dataQuery();
 
-        $state = $this->getPublishableGridFieldState($gridField);
+            $state = $this->getPublishableGridFieldState($gridField);
 
-        if ($state->currentStage == 'Stage') {
-            $dataQuery->setQueryParam('Versioned.mode', 'stage_unique');
-            $dataQuery->setQueryParam('Versioned.stage', 'Stage');
-        } elseif ($state->currentStage == 'Live') {
-            $dataQuery->setQueryParam('Versioned.mode', 'stage');
-            $dataQuery->setQueryParam('Versioned.stage', 'Live');
-        } elseif ($state->currentStage == 'All') {
-            $dataQuery->setQueryParam('Versioned.mode', 'latest_versions');
+            if ($state->currentStage == 'Stage') {
+                $dataQuery->setQueryParam('Versioned.mode', 'stage_unique');
+                $dataQuery->setQueryParam('Versioned.stage', 'Stage');
+            } elseif ($state->currentStage == 'Live') {
+                $dataQuery->setQueryParam('Versioned.mode', 'stage');
+                $dataQuery->setQueryParam('Versioned.stage', 'Live');
+            } else {
+                $dataQuery->setQueryParam('Versioned.mode', 'latest_versions');
+            }
+
+            return $dataList->setDataQuery($dataQuery);
         }
 
-        return $dataList->setDataQuery($dataQuery);
+        return $dataList;
     }
 }
