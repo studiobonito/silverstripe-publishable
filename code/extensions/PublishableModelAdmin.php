@@ -69,6 +69,8 @@ class PublishableModelAdmin extends Extension
                 'Stage'  => _t('PublishableGridField.STAGE_STAGE', 'Draft')
             );
 
+            $params = $this->owner->request->getVar('q');
+
             $stage = isset($params['Stage']) ? $params['Stage'] : null;
 
             $stageDropdownField = new DropdownField('q[Stage]', $stageTitle, $stages, $stage);
