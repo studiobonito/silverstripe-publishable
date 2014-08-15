@@ -46,7 +46,7 @@ class PublishableGridFieldStage implements GridField_DataManipulator
             } elseif ($state->currentStage == 'Live') {
                 $dataQuery->setQueryParam('Versioned.mode', 'stage');
                 $dataQuery->setQueryParam('Versioned.stage', 'Live');
-            } elseif ($state->currentStage == 'All') {
+            } else {
                 $dataQuery->setQueryParam('Versioned.mode', 'latest_versions');
             }
 
