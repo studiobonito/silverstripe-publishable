@@ -103,9 +103,27 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
                             FormAction::create('unpublish',_t('CMSMain.DELETEFP','Delete'))->addExtraClass('ss-ui-action-destructive')
                         );
                     }
-                } else {
+                } else if (!$this->record->isNew()) {
                     $majorActions->push(
                         FormAction::create('restore',_t('CMSMain.RESTORE','Restore'))->setAttribute('data-icon', 'decline')
+                    );
+                } else {
+                    $majorActions->push(
+                        FormAction::create('save', _t('SiteTree.BUTTONSAVED', 'Saved'))
+                            ->addExtraClass('ss-ui-alternate ss-ui-action-constructive')
+                            ->setAttribute('data-icon', 'accept')
+                            ->setAttribute('data-icon-alternate', 'addpage')
+                            ->setAttribute('data-text-alternate', _t('CMSMain.SAVEDRAFT', 'Save draft'))
+                            ->setUseButtonTag(true)
+                    );
+
+                    $majorActions->push(
+                        FormAction::create('publish', _t('SiteTree.BUTTONPUBLISHED', 'Published'))
+                            ->addExtraClass('ss-ui-alternate ss-ui-action-constructive')
+                            ->setAttribute('data-icon', 'accept')
+                            ->setAttribute('data-icon-alternate', 'disk')
+                            ->setAttribute('data-text-alternate', _t('SiteTree.BUTTONSAVEPUBLISH', 'Save & publish'))
+                            ->setUseButtonTag(true)
                     );
                 }
             } else {
