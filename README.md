@@ -1,3 +1,8 @@
+# WARNING: Module depreciated
+
+This SilverStripe module is depreciated please consider using the
+[`silverstripe-versioneddataobjects`](https://github.com/heyday/silverstripe-versioneddataobjects) module instead.
+
 # Publishable Module
 
 ## Overview
