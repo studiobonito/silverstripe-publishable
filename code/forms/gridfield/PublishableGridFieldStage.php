@@ -21,7 +21,9 @@ class PublishableGridFieldStage implements GridField_DataManipulator
         $state = $gridField->State->PublishableGridField;
 
         // Force the state to the initial page if none is set
-        if (empty($state->currentStage)) $state->currentStage = 'Latest';
+        if (empty($state->currentStage)) {
+            $state->currentStage = 'Latest';
+        }
 
         return $state;
     }
