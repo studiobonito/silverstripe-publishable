@@ -19,8 +19,12 @@ class Publishable extends DataExtension
      */
     public function getIsDeletedFromStage()
     {
-        if (!$this->owner->ID) return true;
-        if ($this->isNew()) return false;
+        if (!$this->owner->ID) {
+            return true;
+        }
+        if ($this->isNew()) {
+            return false;
+        }
 
         $stageVersion = Versioned::get_versionnumber_by_stage($this->owner->class, 'Stage', $this->owner->ID);
 
@@ -46,7 +50,9 @@ class Publishable extends DataExtension
     public function getIsModifiedOnStage()
     {
         // new unsaved pages could be never be published
-        if ($this->isNew()) return false;
+        if ($this->isNew()) {
+            return false;
+        }
 
         $stageVersion = Versioned::get_versionnumber_by_stage($this->owner->class, 'Stage', $this->owner->ID);
         $liveVersion = Versioned::get_versionnumber_by_stage($this->owner->class, 'Live', $this->owner->ID);
@@ -64,7 +70,9 @@ class Publishable extends DataExtension
     public function getIsAddedToStage()
     {
         // new unsaved pages could be never be published
-        if ($this->isNew()) return false;
+        if ($this->isNew()) {
+            return false;
+        }
 
         $stageVersion = Versioned::get_versionnumber_by_stage($this->owner->class, 'Stage', $this->owner->ID);
         $liveVersion = Versioned::get_versionnumber_by_stage($this->owner->class, 'Live', $this->owner->ID);
@@ -80,16 +88,22 @@ class Publishable extends DataExtension
          * Changing the condition from empty($this->owner->ID) to
          * !$this->owner->ID && !$this->owner->record['ID'] fixed this.
          */
-        if (empty($this->owner->ID)) return true;
+        if (empty($this->owner->ID)) {
+            return true;
+        }
 
-        if (is_numeric($this->owner->ID)) return false;
+        if (is_numeric($this->owner->ID)) {
+            return false;
+        }
 
         return stripos($this->owner->ID, 'new') === 0;
     }
 
     public function isPublished()
     {
-        if ($this->isNew()) return false;
+        if ($this->isNew()) {
+            return false;
+        }
 
         $baseClass = ClassInfo::baseDataClass($this->owner->class);
 
@@ -188,8 +202,12 @@ class Publishable extends DataExtension
             $this->owner->CLassName,
             sprintf("\"{$this->owner->ClassName}\".\"ID\" = %d", $this->owner->ID)
         );
-        if($record && !$record->canDelete()) return Security::permissionFailure();
-        if(!$record || !$record->ID) throw new SS_HTTPResponse_Exception("Bad record ID #$this->owner->ID", 404);
+        if ($record && !$record->canDelete()) {
+            return Security::permissionFailure();
+        }
+        if (!$record || !$record->ID) {
+            throw new SS_HTTPResponse_Exception("Bad record ID #$this->owner->ID", 404);
+        }
 
         // save ID and delete record
         $record->delete();

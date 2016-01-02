@@ -58,7 +58,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
 
     protected $message;
 
-    function ItemEditForm()
+    public function ItemEditForm()
     {
         $form = parent::ItemEditForm();
 
@@ -96,16 +96,16 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
 
         if ($this->record->canEdit()) {
             if ($this->record->IsDeletedFromStage) {
-                if($existsOnLive) {
-                    $majorActions->push(FormAction::create('revert',_t('CMSMain.RESTORE','Restore')));
-                    if($this->record->canDelete() && $this->record->canDeleteFromLive()) {
+                if ($existsOnLive) {
+                    $majorActions->push(FormAction::create('revert', _t('CMSMain.RESTORE', 'Restore')));
+                    if ($this->record->canDelete() && $this->record->canDeleteFromLive()) {
                         $majorActions->push(
-                            FormAction::create('unpublish',_t('CMSMain.DELETEFP','Delete'))->addExtraClass('ss-ui-action-destructive')
+                            FormAction::create('unpublish', _t('CMSMain.DELETEFP', 'Delete'))->addExtraClass('ss-ui-action-destructive')
                         );
                     }
-                } else if (!$this->record->isNew()) {
+                } elseif (!$this->record->isNew()) {
                     $majorActions->push(
-                        FormAction::create('restore',_t('CMSMain.RESTORE','Restore'))->setAttribute('data-icon', 'decline')
+                        FormAction::create('restore', _t('CMSMain.RESTORE', 'Restore'))->setAttribute('data-icon', 'decline')
                     );
                 } else {
                     $majorActions->push(
@@ -158,7 +158,9 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
             $publish->addExtraClass('ss-ui-alternate');
         }
 
-        if ($this->record->canPublish() && !$this->record->IsDeletedFromStage) $majorActions->push($publish);
+        if ($this->record->canPublish() && !$this->record->IsDeletedFromStage) {
+            $majorActions->push($publish);
+        }
 
         if ($published && $this->record->canPublish() && !$this->record->IsDeletedFromStage && $this->record->canDeleteFromLive()) {
             $moreOptions->push(
@@ -179,7 +181,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
         $actions->push($majorActions);
         $actions->push($rootTabSet);
 
-        if($this->record->hasMethod('getCMSValidator')) {
+        if ($this->record->hasMethod('getCMSValidator')) {
             $form->setValidator($this->record->getCMSValidator());
         }
 
@@ -204,23 +206,20 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
             $form->saveInto($this->record);
             $this->record->doSaveDraft();
             $this->gridField->getList()->add($this->record);
-        }
-        catch (PermissionFailureException $e) {
+        } catch (PermissionFailureException $e) {
             $form->sessionMessage($e->getMessage(), 'bad');
             return $this->getResponseNegotiator($form, $controller)->respond($controller->getRequest());
-        }
-        catch (ValidationException $e) {
+        } catch (ValidationException $e) {
             $form->sessionMessage($e->getResult()->message(), 'bad');
             return $this->getResponseNegotiator($form, $controller)->respond($controller->getRequest());
         }
 
         $this->message = $this->buildMessage('PublishableGridFieldDetailForm.SAVE_SUCCESS', 'Saved {name} "{title}"');
 
-	    if (isset($data['publish']) && $data['publish'] == true) {
+        if (isset($data['publish']) && $data['publish'] == true) {
             try {
                 $this->record->doPublish();
-            }
-            catch (PermissionFailureException $e) {
+            } catch (PermissionFailureException $e) {
                 $form->sessionMessage($e->getMessage(), 'bad');
                 return $this->getResponseNegotiator($form, $controller)->respond($controller->getRequest());
             }
@@ -242,8 +241,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
     {
         try {
             $this->record->doUnpublish();
-        }
-        catch (PermissionFailureException $e) {
+        } catch (PermissionFailureException $e) {
             $form->sessionMessage($e->getMessage(), 'bad');
             return $this->edit(Controller::curr()->getRequest());
         }
@@ -258,8 +256,7 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
     {
         try {
             $this->record->doDeleteDraft();
-        }
-        catch (PermissionFailureException $e) {
+        } catch (PermissionFailureException $e) {
             $form->sessionMessage($e->getMessage(), 'bad');
             return $this->edit(Controller::curr()->getRequest());
         }
@@ -320,10 +317,10 @@ class PublishableGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
     protected function getResponseNegotiator(&$form, &$controller)
     {
         $responseNegotiator = new PjaxResponseNegotiator(array(
-                'CurrentForm' => function() use(&$form) {
+                'CurrentForm' => function () use (&$form) {
                     return $form->forTemplate();
                 },
-                'default' => function() use(&$controller) {
+                'default' => function () use (&$controller) {
                     return $controller->redirectBack();
                 }
             ));

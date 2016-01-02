@@ -9,7 +9,6 @@
  */
 class PublishableGridFieldConfig extends GridFieldConfig
 {
-
 }
 
 /**
@@ -42,7 +41,7 @@ class PublishableGridFieldConfig_Base extends PublishableGridFieldConfig
         $pagination->setThrowExceptionOnBadDataType(false);
 
         $columns->setFieldFormatting(array(
-            'Title' => function($value, &$item) {
+            'Title' => function ($value, &$item) {
                 $badge = array();
                 if ($item->ExistsOnLive && $item->IsModifiedOnStage) {
                     $badge['class'] = 'modified';
@@ -53,7 +52,7 @@ class PublishableGridFieldConfig_Base extends PublishableGridFieldConfig
                 }
 
                 $return = $item->Title;
-                if(isset($badge['class']) && isset($badge['title'])) {
+                if (isset($badge['class']) && isset($badge['title'])) {
                     $return .= sprintf(
                         "<span class=\"badge %s\">%s</span>",
                         'status-' . Convert::raw2xml($badge['class']),
@@ -100,7 +99,7 @@ class PublishableGridFieldConfig_RecordViewer extends PublishableGridFieldConfig
         $pagination->setThrowExceptionOnBadDataType(false);
 
         $columns->setFieldFormatting(array(
-            'Title' => function($value, &$item) {
+            'Title' => function ($value, &$item) {
                 $badge = array();
                 if ($item->ExistsOnLive && $item->IsModifiedOnStage) {
                     $badge['class'] = 'modified';
@@ -111,7 +110,7 @@ class PublishableGridFieldConfig_RecordViewer extends PublishableGridFieldConfig
                 }
 
                 $return = $item->Title;
-                if(isset($badge['class']) && isset($badge['title'])) {
+                if (isset($badge['class']) && isset($badge['title'])) {
                     $return .= sprintf(
                         "<span class=\"badge %s\">%s</span>",
                         'status-' . Convert::raw2xml($badge['class']),
@@ -160,7 +159,7 @@ class PublishableGridFieldConfig_RecordEditor extends PublishableGridFieldConfig
         $pagination->setThrowExceptionOnBadDataType(false);
 
         $columns->setFieldFormatting(array(
-            'Title' => function($value, &$item) {
+            'Title' => function ($value, &$item) {
                 $badge = array();
                 if ($item->ExistsOnLive && $item->IsModifiedOnStage) {
                     $badge['class'] = 'modified';
@@ -171,7 +170,7 @@ class PublishableGridFieldConfig_RecordEditor extends PublishableGridFieldConfig
                 }
 
                 $return = $item->Title;
-                if(isset($badge['class']) && isset($badge['title'])) {
+                if (isset($badge['class']) && isset($badge['title'])) {
                     $return .= sprintf(
                         "<span class=\"badge %s\">%s</span>",
                         'status-' . Convert::raw2xml($badge['class']),
